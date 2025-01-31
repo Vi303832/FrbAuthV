@@ -1,15 +1,22 @@
 import React, { useState } from 'react'
 import { UseAddTransaction } from "../hooks/useAddTransaction"
+import { useGetTransactions } from '../hooks/useGetTransactions';
+import { useGetuserİnfo } from "../hooks/useGetuserİnfo"
+import { signOut } from 'firebase/auth';
+import { useNavigate } from "react-router-dom"
+import { auth } from '../Firebase';
 
 export const Exp = () => {
 
-
+    const navigate = useNavigate();
     const { addTransaction } = UseAddTransaction();
-
+    const { transactions } = useGetTransactions();
 
     const [description, setdes] = useState("");
     const [transactionAmount, settra] = useState(0);
     const [transactionType, settype] = useState("expense");
+
+    const { userID, profilePhoto, isAuth, Name } = useGetuserİnfo();
 
 
 
@@ -27,7 +34,17 @@ export const Exp = () => {
 
     }
 
+    const signuserout = async () => {
 
+        try {
+            await signOut(auth)
+            localStorage.clear();
+            navigate("/")
+        } catch (error) {
+            console.error(error)
+        }
+
+    }
 
 
     return (
@@ -69,15 +86,44 @@ export const Exp = () => {
                     </span>
                     <br></br>
                     <br></br>
-                    <button type='sumbit' >Add Transaction</button>
+                    <button type='sumbit' className='border-2 p-1 rounded cursor-pointer ' >Add Transaction</button>
 
 
 
                 </form>
+                <div>
+                    {profilePhoto && (<>
+
+                        <div><img src={profilePhoto} /></div>
+
+                        <button onClick={signuserout} className='border-2 p-1 rounded cursor-pointer ' >Sign Out</button>
+                    </>
+                    )}
+
+                </div>
+
             </div>
             <div>
                 <div>Transactions</div>
+                <br></br>
+                <ul>
 
+                    {transactions.map((t, index) => {
+                        const { description, transactionAmount, transactionType } = t;
+                        return (
+                            <li key={index}> {/* Use a unique key here */}
+                                <h4>{description}</h4>
+
+                                <p>${transactionAmount} <label>{transactionType}</label></p>
+                                <br></br>
+                                <br></br>
+                            </li>
+                        );
+                    })}
+
+
+
+                </ul>
 
 
 
