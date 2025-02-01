@@ -6,11 +6,12 @@ import { signOut } from 'firebase/auth';
 import { useNavigate } from "react-router-dom"
 import { auth } from '../Firebase';
 
+
 export const Exp = () => {
 
     const navigate = useNavigate();
     const { addTransaction } = UseAddTransaction();
-    const { transactions } = useGetTransactions();
+    const { transactions, transactionTotals } = useGetTransactions();
 
     const [description, setdes] = useState("");
     const [transactionAmount, settra] = useState(0);
@@ -18,6 +19,7 @@ export const Exp = () => {
 
     const { userID, profilePhoto, isAuth, Name } = useGetuserİnfo();
 
+    const { balance, income, expenses } = transactionTotals;
 
 
 
@@ -54,15 +56,15 @@ export const Exp = () => {
                     <h1> Expense Tracker</h1>
                     <div>
                         <h3>Your Balance</h3>
-                        <h3>$0.00</h3>
+                        {balance >= 0 ? <h2> ${balance}</h2> : <h2> -${balance * -1}</h2>}
                     </div>
                     <div>
                         <h4>İncome</h4>
-                        <p>$0.00</p>
+                        <p>${income}0.00</p>
                     </div>
                     <div>
                         <h4>Expenses</h4>
-                        <p>$0.00</p>
+                        <p>${expenses}</p>
                     </div>
                 </div>
                 <form onSubmit={onSumbit}>
